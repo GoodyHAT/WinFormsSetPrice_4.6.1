@@ -51,7 +51,7 @@ namespace WinFormsSetPrice
 
             timer1 = new Timer();
             timer1.Tick += timer1_Tick;
-            timer1.Interval = timePeriod;
+            timer1.Interval = 1;
             timer1.Start();
 
             timer2 = new Timer();
@@ -62,6 +62,14 @@ namespace WinFormsSetPrice
 
         private async void timer1_Tick(object sender, EventArgs e)
         {
+            timer1.Stop();
+            timer1.Interval = timePeriod;
+            textBox1.Text = "Идет обновление...";
+            dataGridView1.Enabled = false;
+            button1.Enabled = false;
+            button2.Enabled = false;
+            button3.Enabled = false;
+            
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 if (row.Cells[13].Value != null && !string.IsNullOrEmpty(row.Cells[13].Value.ToString()))
@@ -82,16 +90,15 @@ namespace WinFormsSetPrice
                                     row.Cells[11].Value.ToString(),
                                     decimal.Parse(row.Cells[12].Value.ToString()) - decimal.Parse(row.Cells[7].Value.ToString())
                                 );
-                                if (res)
-                                {
-                                    //MessageBox.Show($"AGZS: {row.Cells[11].Value.ToString()} set price {row.Cells[12].Value.ToString()}");
-                                    listAgzs = await ExtDataClass.GetAgzsAsync();
-                                    dataGridView1.DataSource = listAgzs.OrderBy(x => x.agzsid).ToList();
-                                }
-                                else
-                                {
-                                    //MessageBox.Show($"AGZS: {row.Cells[11].Value.ToString()} NOT set price {row.Cells[12].Value.ToString()}");
-                                }
+                                //if (res)
+                                //{
+                                //    //MessageBox.Show($"AGZS: {row.Cells[11].Value.ToString()} set price {row.Cells[12].Value.ToString()}");
+                                    
+                                //}
+                                //else
+                                //{
+                                //    //MessageBox.Show($"AGZS: {row.Cells[11].Value.ToString()} NOT set price {row.Cells[12].Value.ToString()}");
+                                //}
 
                             }
                             catch (Exception ex)
@@ -102,6 +109,15 @@ namespace WinFormsSetPrice
                     }
                 }
             }
+            listAgzs = await ExtDataClass.GetAgzsAsync();
+            dataGridView1.DataSource = listAgzs.OrderBy(x => x.agzsid).ToList();
+            textBox1.Text = "Обновление остановлено";
+            dataGridView1.Enabled = true;
+            button1.Enabled = true;
+            button2.Enabled = true;
+            button3.Enabled = true;
+
+            timer1.Start();
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -374,7 +390,7 @@ namespace WinFormsSetPrice
         {
             if (e.ColumnIndex == 12 || e.ColumnIndex == 13)
             {
-                if(string.IsNullOrEmpty(((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString()))
+                if(((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex].Value!=null && string.IsNullOrEmpty(((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString()))
                 {
                     //remove record
                     var agzsid = ((DataGridView)sender).Rows[e.RowIndex].Cells[11].Value.ToString();
