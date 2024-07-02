@@ -372,6 +372,21 @@ namespace WinFormsSetPrice
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.ColumnIndex == 12 || e.ColumnIndex == 13)
+            {
+                if(string.IsNullOrEmpty(((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString()))
+                {
+                    //remove record
+                    var agzsid = ((DataGridView)sender).Rows[e.RowIndex].Cells[11].Value.ToString();
+                    var rec = sheduler.FirstOrDefault(x => x.agzsid == agzsid);
+                    sheduler.Remove(rec);
+                    
+                    //Save settings
+                    var contentsToWriteToSettings = JsonConvert.SerializeObject(sheduler);
+                    Properties.Settings.Default["sheduler"] = contentsToWriteToSettings;
+                    Properties.Settings.Default.Save();
+                }
+            }
             timer1.Start();
         }
 

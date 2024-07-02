@@ -116,6 +116,7 @@ namespace WinFormsSetPrice
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(92, 20);
             this.textBox4.TabIndex = 7;
+            this.textBox4.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox4_KeyPress);
             // 
             // button1
             // 

@@ -34,7 +34,7 @@ namespace WinFormsSetPrice
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            var d = decimal.Parse(textBox4.Text, CultureInfo.InvariantCulture) - decimal.Parse(textBox3.Text.Replace(",","."), CultureInfo.InvariantCulture);
+            var d = decimal.Parse(textBox4.Text.Replace(",", "."), CultureInfo.InvariantCulture) - decimal.Parse(textBox3.Text.Replace(",","."), CultureInfo.InvariantCulture);
             bool res = await ExtDataClass.SetPrice(textBox2.Text, d);
             Close();
         }
