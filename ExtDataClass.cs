@@ -51,24 +51,29 @@ namespace WinFormsSetPrice
 
         public static async Task<List<Models.agzsClass>> GetAgzsAsync()
         {
-            if (token_expires_in == 0 || DateTime.Now.Ticks < token_expires_in)
-                await GetTokenAsync();
+            try
+            {
+                if (token_expires_in == 0 || DateTime.Now.Ticks < token_expires_in)
+                    await GetTokenAsync();
 
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{webaddress}/api/GasStations");
-            request.Headers.Add("Authorization", $"Bearer {token}");
-            var content = new StringContent("", null, "application/json");
-            //request.Content = content;
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+                var client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{webaddress}/api/GasStations");
+                request.Headers.Add("Authorization", $"Bearer {token}");
+                var content = new StringContent("", null, "application/json");
+                //request.Content = content;
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
 
-            string json = await response.Content.ReadAsStringAsync();
-            JObject data = JObject.Parse(json);
-            var v = data["agzs"].ToObject<List<Models.agzsClass>>();
-            if (v != null)
-                return v;
+                string json = await response.Content.ReadAsStringAsync();
+                JObject data = JObject.Parse(json);
+                var v = data["agzs"].ToObject<List<Models.agzsClass>>();
+                if (v != null)
+                    return v;
 
-            return new List<Models.agzsClass>();
+                return new List<Models.agzsClass>();
+            }
+            catch
+            { return null; }
         }
 
         internal static async Task<bool> SetPrice(string agzsid, decimal d)

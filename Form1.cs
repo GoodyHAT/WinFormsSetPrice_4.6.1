@@ -110,6 +110,26 @@ namespace WinFormsSetPrice
                 }
             }
             listAgzs = await ExtDataClass.GetAgzsAsync();
+            while(listAgzs == null)
+            {
+                // не настроено?
+                FormSetting fs = new FormSetting();
+                fs.StartPosition = FormStartPosition.CenterScreen;
+
+                fs.textBox1.Text = Properties.Settings.Default["webaddress"].ToString();
+                fs.textBox2.Text = Properties.Settings.Default["user"].ToString();
+                fs.textBox3.Text = Properties.Settings.Default["pass"].ToString();
+                fs.textBox4.Text = Properties.Settings.Default["time"].ToString();
+
+                fs.ShowDialog();
+
+                ExtDataClass.webaddress = Properties.Settings.Default["webaddress"].ToString();
+                ExtDataClass.user = Properties.Settings.Default["user"].ToString();
+                ExtDataClass.pass = Properties.Settings.Default["pass"].ToString();
+                timer1.Interval = (int)Properties.Settings.Default["time"];
+
+                listAgzs = await ExtDataClass.GetAgzsAsync();
+            }
             dataGridView1.DataSource = listAgzs.OrderBy(x => x.agzsid).ToList();
             textBox1.Text = "Обновление остановлено";
             dataGridView1.Enabled = true;
